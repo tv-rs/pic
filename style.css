@@ -1,0 +1,493 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "coolFont", sans-serif;
+}
+
+body {
+    background-color: #000000;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll from potential animations */
+}
+
+@font-face {
+    font-family: "coolFont";
+    src: url("ZalandoSansExpanded-Regular.ttf");
+}
+
+@font-face {
+    font-family: "coolFontBold";
+    src: url("ZalandoSansExpanded-SemiBold.ttf");
+}
+
+.loading-overlay,
+.fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease-out;
+    opacity: 1;
+}
+
+.fullscreen-overlay {
+    background-color: rgba(0, 0, 0, 0.249);
+    backdrop-filter: blur(15px);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.313);
+    z-index: 29999999000;
+    display: flex;
+    color: whitesmoke;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    /* Above all other content */
+}
+
+.btnAlign {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.cancelBtn,
+.fullBtn {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border:none;
+    cursor: pointer;
+    font-size: 1rem;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.fullBtn {
+    background-color: #0b85006f;
+    border: 1px solid #ffffff70;
+    color: #fff;
+}   
+
+.cancelBtn {
+    background-color: #8500006f;
+    border: 1px solid #ffffff70;
+    color: #fff;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+    /* Allow interaction with content underneath */
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #ffffff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.button1,
+.button2 {
+    position: fixed;
+    top: 5px;
+    height: 40px;
+    background-color: #2323236f;
+    border: 1px solid #ffffff70;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    /* Ensure button is above other content */
+}
+
+.button2 {
+    right: 50px;
+    width: 80px;
+    font-size: 1rem;
+    padding-bottom: 0x;
+}
+
+.button1 {
+    right: 5px;
+    padding-bottom: 3px;
+    width: 40px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    margin: 50px 2px 0px 2px;
+    opacity: 0;
+    /* Hidden by default, will fade in after loading */
+    transition: opacity 1s ease-in;
+    opacity: 1;
+}
+
+.container .heading {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    padding-left: 10px;
+
+    display: flex;
+    /* Enable flexbox */
+    align-items: center;
+    /* Vertically center content */
+    justify-content: flex-start;
+    /* Keep items aligned to the left (change to center if you want full centering) */
+    height: 50px;
+    z-index: 9999999;
+    /* Optional: set a height to define the center reference */
+}
+
+
+.container .heading h3 {
+    font-size: 1.75rem;
+    font-family: "coolFontBold";
+    z-index: 99999999;
+    color: white;
+}
+
+/* Responsive grid for .box */
+.container .box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Default to 1 column on very small screens */
+    gap: 1.5px;
+    width: 100%;
+}
+
+.container .box .dream {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5px;
+    /* Space between images within a column */
+    width: 100%;
+}
+
+.container .box .dream img {
+    width: 100%;
+    border-radius: 3px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 0.5px solid #dddddd83;
+}
+
+.cool {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 999;
+    background: linear-gradient(170deg, #020202, transparent 70%);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background-color: rgba(0, 0, 0, 0.738);
+    backdrop-filter: blur(8px);
+    z-index: 159999900;
+    transition: 0.3s;
+}
+
+.overlay img {
+    width: 98%;
+    object-fit: contain;
+    display: block;
+    max-height: 90vh;
+    margin: auto;
+    border-radius: 3px;
+}
+
+.overlay .more {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    z-index: 1501;
+    display: flex;
+    gap: 10px;
+    width: auto;
+    background-color: #4949496f;
+    justify-content: center;
+    margin: auto;
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: 1px solid #ffffff2c;
+    box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.604);
+    transition: 0.3s;
+}
+
+.overlay .more .overlayBtns {
+    background-color: #2323236f;
+    border: 1px solid #ffffff70;
+    color: #fff;
+    border-radius: 25px;
+    font-size: 24px;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    padding: 10px 15px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.overlay .more .reply-section .overlayBtns {
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 15px 0px 15px;
+}
+
+.overlay .more .reply-section .overlayBtns span {
+    margin-left: 8px;
+    font-size: 1.3rem;
+    padding-bottom: 1px;
+}
+
+/* Slideshow Styles */
+.slideshow-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: none;
+    backdrop-filter: blur(10px);
+    /* Hidden by default */
+    justify-content: center;
+    align-items: center;
+    z-index: 29999999000;
+    /* Above all other content */
+    overflow: hidden;
+    /* Prevent scrollbars */
+}
+
+.slideshow-overlay.active {
+    display: flex;
+}
+
+.close-slideshow {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2001;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    padding-top: 1.5px;
+    backdrop-filter: blur(15px);
+    font-weight: lighter;
+    border-radius: 25px;
+    background-color: #6200006f;
+    border: 1px solid #ffffff70;
+    transition: 0.3s;
+}
+
+.slideshow-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slideshow-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.slideshow-nav {
+    position: fixed;
+    top: 0;
+    color: #fff;
+    user-select: none;
+    background-color: none;
+    height: 100vh;
+}
+
+.slideshow-nav.left {
+    left: 0px;
+    width: 30vw;
+}
+
+.slideshow-nav.right {
+    right: 0px;
+    width: 70vw;
+}
+
+.slideshow-progress-bar-container {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+}
+
+.slideshow-progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #ffffff;
+    border-radius: 5px;
+    transition: width 0.1s linear;
+    /* Smooth fill */
+}
+
+/* Progressive Blur Loading */
+/* Progressive Blur Loading */
+.blur-load {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+/* ⏳ Loading animation using ::before pseudo-element */
+.blur-load::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            rgba(255, 255, 255, 0.2) 40%,
+            rgba(255, 255, 255, 0.05) 60%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    z-index: 1;
+}
+
+/* 🪄 When image is loaded, fade out the pseudo shimmer */
+.blur-load.loaded::before {
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+    animation: none;
+}
+
+/* 🔄 The shimmer keyframes */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* 🖼️ Image blur transition */
+.blur-load img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.5s ease-out, filter 0.7s ease-out;
+    position: relative;
+    z-index: 2;
+    /* keep image above shimmer background */
+}
+
+.blur-load.loaded img {
+    filter: blur(0);
+    opacity: 1;
+}
+
+
+/* Media Queries for responsiveness */
+
+/* Mobile: 3 columns (roughly, by stacking the 'dream' elements) */
+@media (min-width: 480px) {
+    .container .box {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .slideshow-progress-bar-container {
+        bottom: 20px;
+        max-width: 700px;
+        border-radius: 5px;
+    }
+
+    .slideshow-content {
+        width: 90%;
+        height: 100%;
+    }
+
+    .slideshow-content img {
+        max-height: 70%;
+    }
+}
+
+/* Tablet: 3 columns */
+@media (min-width: 768px) {
+    .container .box {
+        grid-template-columns: repeat(5, 1fr);
+        /* 3 columns */
+    }
+}
+
+/* Small Desktop: 4 columns */
+@media (min-width: 1024px) {
+    .container .box {
+        grid-template-columns: repeat(6, 1fr);
+        /* 4 columns */
+    }
+}
+
+/* Medium Desktop: 5 columns */
+@media (min-width: 1200px) {
+    .container .box {
+        grid-template-columns: repeat(7, 1fr);
+        /* 5 columns */
+    }
+}
+
+/* Large Desktop: 6 columns */
+@media (min-width: 1400px) {
+    .container .box {
+        grid-template-columns: repeat(8, 1fr);
+        /* 6 columns */
+    }
+}
