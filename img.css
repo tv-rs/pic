@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap');
+
+body {
+    font-family: "Cabin Sketch", serif;
+    background: rgb(62, 26, 31);
+    margin: 0px;
+}
+
+
+#add-image-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    font-size: 30px;
+    background-color: #6262627b;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    backdrop-filter: blur(10px);
+    padding: 1px 0px 0px 0px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#close-image-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000000000;
+    font-size: 30px;
+    background-color: #ff00008e;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+}
+
+#collage-container {
+    column-width: 200px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#collage-container>img {
+    max-width: 300px;
+    width: 100%;
+    margin-bottom: 5px;
+    object-fit: contain;
+    align-self: flex-start;
+    border-radius: 8px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+h1{
+    color: white;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+p{
+    color: white;
+    text-align: center;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-bottom: 20px;
+}
+
+.loader {
+    position: fixed;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 101vh;
+    z-index: 10011;
+    width: 101%;
+    background-color: rgba(0, 0, 0, 0.612);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.loader>img {
+    margin-left: auto;
+    width: 200px;
+}
+
+
+.text-container {
+    font-size: 1.5rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-top: 15px;
+    animation: fadeInLoop 2s ease-in-out infinite;
+}
+
+@keyframes fadeInLoop {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.fade-text span {
+    opacity: 0;
+    display: inline-block;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}

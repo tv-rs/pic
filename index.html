@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memoriez Gallery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="cool"></div>
+    <div class="container">
+        <div class="heading">
+            <h3>Memoriez</h3>
+            <button class="button1" onclick="window.location='img.html'">+</button>
+            <button class="button2" id="show-slideshow-btn">Show</button>
+        </div>
+        <div class="box" id="image-gallery">
+            <!-- Images will be dynamically loaded and organized here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Slideshow Overlay -->
+    <div class="slideshow-overlay" id="slideshow-overlay">
+        <span class="close-slideshow" id="close-slideshow">&times;</span>
+        <div class="slideshow-content">
+            <img src="" alt="Slideshow Image" id="slideshow-img">
+            <div class="slideshow-nav left" id="slideshow-prev"></div>
+            <div class="slideshow-nav right" id="slideshow-next"></div>
+            <div class="slideshow-progress-bar-container">
+                <div class="slideshow-progress-bar" id="slideshow-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="fullscreen-overlay" id="fullscreen-overlay">
+        <h1>Go FullScreen</h1>
+        <p>to get the best experience</p>
+        <div class="btnAlign">
+            <button class="cancelBtn"
+                onclick="document.getElementById('fullscreen-overlay').style.display='none'">Cancel</button>
+            <button class="fullBtn" onclick="document.documentElement.requestFullscreen();
+                document.getElementById('fullscreen-overlay').style.display = 'none';">Ok</button>
+        </div>
+    </div>
+    <div class="overlay" id="overlay" style="display: none;">
+        <span class="close-slideshow" id="close-overlay" onclick="closeOverlay()">&times;</span>
+        <img src="" ondblclick="likeImg()" id="overlay-img" onclick="toggleOverlayUI()">
+        <div class="more">
+            <div class="reply-section">
+                <button class="overlayBtns" id="reply-btn"><img src="tag_svg.svg"><span>Reply</span></button>
+            </div>
+            <div class="download-section">
+                <button class="overlayBtns" id="download-btn" onclick="downloadImg()"><img
+                        src="download_svg.svg"></button>
+            </div>
+            <!-- <div class="like-section">
+                <button class="overlayBtns" id="like-btn"><img src="svg/like_svg.svg"></button>
+            </div> -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const imageUrls = [
+                "oneLove.jpg",
+                "tanu (1).jpg",
+                "tanu (2).jpg",
+                "tanu (3).jpg",
+                "tanu (4).jpg",
+                "tanu (5).jpg",
+                "tanu (6).jpg",
+                "tanu (7).jpg",
+                "tanu (8).jpg",
+                "tanu (9).jpg",
+                "tanu (10).jpg",
+                "tanu (11).jpg",
+                "tanu (12).jpg",
+                "tanu (13).jpg",
+                "tanu (13).jpg",
+                "tanu (14).jpg",
+                "Tanu (14).jpg",
+                "Tanu (15).jpg",
+                "Tanu (16).jpg",
+                "Tanu (17).jpg",
+                "Tanu (18).jpg",
+                "Tanu (19).jpg",
+                "Tanu (20).jpg",
+                "Tanu (21).jpg",
+                "tanu (22).jpg",
+                "tanu (23).jpg",
+                "tanu (24).jpg",
+                "tanu (25).jpg",
+                "tanu (26).jpg",
+                "tanu (27).jpg",
+                "garba (1).jpg",
+                "garba (2).jpg",
+                "garba (3).jpg",
+                "garba (4).jpg",
+                "garba (5).jpg",
+                "garba (6).jpg",
+                "dance (1).jpg",
+                "dance (2).jpg",
+                "dance (3).jpg",
+                "dance (3).jpg",
+                "dance (4).jpg",
+                "dance (5).jpg",
+                "dance (6).jpg",
+                "dance (7).jpg",
+                "dance (8).jpg",
+                "kashmir (1).jpg",
+                "kashmir (2).jpg",
+                "kashmir (3).jpg",
+                "riti (1).jpg",
+                "riti (2).jpg",
+                "riti (3).jpg",
+                "riti (4).jpg",
+                "riti (5).jpg",
+                "us (1).jpg",
+                "us (2).jpg",
+                "us (3).jpg",
+                "us (4).jpg",
+                "us (5).jpg",
+                "us (6).jpg",
+                "us (7).jpg",
+                "us (8).jpg",
+                "us (9).jpg",
+                "us (10).jpg",
+                "us (11).jpg",
+                "us (12).jpg",
+            ];
+
+            const gallery = document.getElementById("image-gallery");
+            const loadingOverlay = document.querySelector(".loading-overlay");
+            const mainContainer = document.querySelector(".container");
+            let imagesLoaded = 0;
+
+            // Slideshow elements
+            const showSlideshowBtn = document.getElementById("show-slideshow-btn");
+            const slideshowOverlay = document.getElementById("slideshow-overlay");
+            const closeSlideshowBtn = document.getElementById("close-slideshow");
+            const slideshowImg = document.getElementById("slideshow-img");
+            const slideshowPrev = document.getElementById("slideshow-prev");
+            const slideshowNext = document.getElementById("slideshow-next");
+            const slideshowProgressBar = document.getElementById(
+                "slideshow-progress-bar"
+            );
+
+            let currentImageIndex = 0;
+            let slideshowInterval;
+            const slideshowDuration = 5000; // 5 seconds per image
+            let progressBarStartTime;
+            let progressBarAnimationId;
+
+            // Function to create columns and distribute images
+            function distributeImages(images, numColumns) {
+                // Clear existing content
+                gallery.innerHTML = "";
+
+                // Create column divs
+                const columns = Array.from({ length: numColumns }, () => {
+                    const div = document.createElement("div");
+                    div.classList.add("dream");
+                    return div;
+                });
+
+                // Distribute images among columns
+                images.forEach((src, index) => {
+                    // Create blur container
+                    const blurDiv = document.createElement("div");
+                    blurDiv.classList.add("blur-load");
+                    blurDiv.style.backgroundImage = `url('${src.replace(/\.(jpg|png)$/i, '-small.$1')}')`;
+
+                    // Create actual image
+                    const img = document.createElement("img");
+                    img.src = src;
+                    img.alt = `Gallery Image ${index + 1}`;
+                    img.loading = "lazy";
+                    img.onclick = () => openImage(img);
+
+                    // Append
+                    blurDiv.appendChild(img);
+                    columns[index % numColumns].appendChild(blurDiv);
+
+                    // ✅ Blur transition trigger (the part you asked about)
+                    img.addEventListener("load", () => {
+                        // small delay to let browser register "before" state
+                        requestAnimationFrame(() => blurDiv.classList.add("loaded"));
+                    });
+
+                    // ✅ Handle instantly loaded (cached) images
+                    if (img.complete) {
+                        requestAnimationFrame(() => blurDiv.classList.add("loaded"));
+                    }
+                });
+
+
+                // Append columns to the gallery
+                columns.forEach((col) => gallery.appendChild(col));
+            }
+
+            // Function to get the number of columns based on current viewport width
+            function getNumColumns() {
+                const width = window.innerWidth;
+                if (width >= 1400) return 8;
+                if (width >= 1200) return 7;
+                if (width >= 1024) return 6;
+                if (width >= 768) return 5;
+                if (width >= 480) return 4;
+                return 3; // Default for very small screens
+            }
+
+            // Initial distribution of images
+            distributeImages(imageUrls, getNumColumns());
+
+            // Update distribution on window resize
+            let resizeTimeout;
+            window.addEventListener("resize", () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    distributeImages(imageUrls, getNumColumns());
+                }, 200); // Debounce resize event
+            });
+
+            // --- Slideshow Functions ---
+
+            function showImage(index) {
+                currentImageIndex = (index + imageUrls.length) % imageUrls.length; // Ensure index wraps around
+                slideshowImg.src = imageUrls[currentImageIndex];
+                resetProgressBar();
+                startProgressBarAnimation();
+            }
+
+            function nextImage() {
+                showImage(currentImageIndex + 1);
+            }
+
+            function prevImage() {
+                showImage(currentImageIndex - 1);
+            }
+
+            function startSlideshowTimer() {
+                clearInterval(slideshowInterval); // Clear any existing interval
+                slideshowInterval = setInterval(nextImage, slideshowDuration);
+            }
+
+            function stopSlideshowTimer() {
+                clearInterval(slideshowInterval);
+                cancelAnimationFrame(progressBarAnimationId);
+            }
+
+            function resetProgressBar() {
+                slideshowProgressBar.style.width = "0%";
+                cancelAnimationFrame(progressBarAnimationId);
+            }
+
+            function startProgressBarAnimation() {
+                progressBarStartTime = performance.now();
+                function animateProgressBar(currentTime) {
+                    const elapsed = currentTime - progressBarStartTime;
+                    const progress = Math.min(elapsed / slideshowDuration, 1);
+                    slideshowProgressBar.style.width = `${progress * 100}%`;
+
+                    if (progress < 1) {
+                        progressBarAnimationId = requestAnimationFrame(animateProgressBar);
+                    }
+                }
+                progressBarAnimationId = requestAnimationFrame(animateProgressBar);
+            }
+
+            function openSlideshow() {
+                slideshowOverlay.classList.add("active");
+                // Initially show the first image or a random one
+                showImage(0);
+                startSlideshowTimer();
+                // Disable body scroll when slideshow is open
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeSlideshow() {
+                slideshowOverlay.classList.remove("active");
+                stopSlideshowTimer();
+                document.body.style.overflow = ""; // Re-enable body scroll
+            }
+
+            // Event Listeners for Slideshow
+            showSlideshowBtn.addEventListener("click", openSlideshow);
+            closeSlideshowBtn.addEventListener("click", closeSlideshow);
+            slideshowPrev.addEventListener("click", () => {
+                prevImage();
+                startSlideshowTimer(); // Reset timer on manual navigation
+            });
+            slideshowNext.addEventListener("click", () => {
+                nextImage();
+                startSlideshowTimer(); // Reset timer on manual navigation
+            });
+
+            // Click anywhere on the image to navigate
+            slideshowImg.addEventListener("click", (event) => {
+                const clickX = event.clientX;
+                const imgRect = slideshowImg.getBoundingClientRect();
+                const midPoint = imgRect.left + imgRect.width / 2;
+
+                if (clickX < midPoint) {
+                    prevImage();
+                } else {
+                    nextImage();
+                }
+                startSlideshowTimer(); // Reset timer on manual navigation
+            });
+            let maxScroll = window.innerHeight * 0.06;
+
+            window.addEventListener("resize", () => {
+                maxScroll = window.innerHeight * 0.06;
+            });
+
+            window.addEventListener("scroll", () => {
+                let scrollY = window.scrollY;
+                if (scrollY > maxScroll) scrollY = maxScroll;
+                const progress = scrollY / maxScroll;
+                document.querySelector(".cool").style.opacity = `${0 + progress}`;
+            });
+        });
+
+        function toggleOverlayUI() {
+            const moreDiv = document.querySelector(".more");
+            moreDiv.style.bottom = moreDiv.style.bottom === "20px" ? "-100px" : "20px";
+            const closeBtn = document.getElementById("close-overlay");
+            closeBtn.style.top = closeBtn.style.top === "20px" ? "-100px" : "20px";
+            const overlay = document.getElementById("overlay");
+            overlay.style.backgroundColor =
+                overlay.style.backgroundColor === "rgba(0, 0, 0, 0.738)"
+                    ? "rgba(0, 0, 0)"
+                    : "rgba(0, 0, 0, 0.738)";
+            overlay.style.backdropFilter =
+                overlay.style.backdropFilter === "blur(8px)" ? "blur(20px)" : "blur(8px)";
+        }
+
+        function closeOverlay() {
+            const overlay = document.getElementById("overlay");
+            overlay.style.display = "none";
+        }
+
+        function openImage(imgE) {
+            const overlay = document.getElementById("overlay");
+            const overlayImg = document.getElementById("overlay-img");
+            overlayImg.src = imgE.src;
+            overlay.style.display = "grid";
+        }
+
+        function likeImg() {
+            const likeBtn = document.getElementById("like-btn");
+        }
+
+        function downloadImg() {
+            const overlayImg = document.getElementById("overlay-img");
+            const link = document.createElement("a");
+            link.href = overlayImg.src;
+            link.download = "image.jpg"; // You can set a default name or extract from URL
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+
+</html>
